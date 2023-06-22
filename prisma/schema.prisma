@@ -2,13 +2,15 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongodb"]
 }
 
 datasource db {
   //provider = "postgresql"
   provider = "mongodb"
   url      = env("DATABASE_URL")
+  //url      = "mongodb+srv://yerson:yerson@cluster0.ne2nbxa.mongodb.net/"
 }
 
 // Definir la estructura de la tabla de la base de datos para el usuario
@@ -30,7 +32,7 @@ model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
   email          String?   @unique
-  emailVerified  DataTime?
+  emailVerified  DateTime?
   image          String?
   hashedPassword String?
   createdAt      DateTime  @default(now())
