@@ -7,6 +7,8 @@ import { useCallback, useState } from "react";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import AuthSocialButton from "./AuthSocialButton";
+import { toast } from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 // Limitar los valores a elegir
 type Variant = "LOGIN" | "REGISTER";
@@ -46,10 +48,26 @@ const AuthForm = () => {
 		setIsLoading(true);
 		if (variant === "REGISTER") {
 			// api/register ya que en la carpeta app/api/register esta el archivo de registro
-			axios.post("api/register", data);
+			axios
+				.post("/api/register", data) // envia una peticion post a la api
+				.catch(() => toast.error("Something went wrong!")) // si la solicitud falla, muestra un errork usando toast
+				.finally(() => setIsLoading(false)); // si la solicitud se completa, deshabilita el loading
 		}
 		if (variant === "LOGIN") {
-			//NextAuth Signin
+			signIn("credentials", {
+				...data,
+				redirect: false,
+			})
+				.then((callback) => {
+					if (callback?.error) {
+						toast.error("Invalid credentials");
+					}
+
+					if (callback?.ok && !callback?.error) {
+						toast.success("Welcome back!");
+					}
+				})
+				.finally(() => setIsLoading(false));
 		}
 	};
 
@@ -57,6 +75,16 @@ const AuthForm = () => {
 		setIsLoading(true);
 
 		// NextAuth social Signin
+		signIn(action, { redirect: false })
+			.then((callback) => {
+				if (callback?.error) {
+					toast.error("Something went wrong!");
+				}
+				if (callback?.ok && !callback?.error) {
+					toast.success("Welcome back!");
+				}
+			})
+			.finally(() => setIsLoading(false));
 	};
 
 	return (
