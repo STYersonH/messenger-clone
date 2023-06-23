@@ -1,4 +1,6 @@
 "use client"; // renderizar solo en el lado del cliente -> NEXT 13
+
+import axios from "axios";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/input";
 import { useCallback, useState } from "react";
@@ -43,7 +45,8 @@ const AuthForm = () => {
 		// Si se esta enviando significa que debemos habilitar el loading
 		setIsLoading(true);
 		if (variant === "REGISTER") {
-			//Axios register
+			// api/register ya que en la carpeta app/api/register esta el archivo de registro
+			axios.post("api/register", data);
 		}
 		if (variant === "LOGIN") {
 			//NextAuth Signin
