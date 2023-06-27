@@ -3,20 +3,31 @@
 import axios from "axios";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/input";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import AuthSocialButton from "./AuthSocialButton";
 import { toast } from "react-hot-toast";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 // Limitar los valores a elegir
 type Variant = "LOGIN" | "REGISTER";
 
 const AuthForm = () => {
+	const session = useSession();
+	const router = useRouter();
 	// Solo se tendra 2 valores posibles para variant
 	const [variant, setVariant] = useState<Variant>("LOGIN");
 	const [isLoading, setIsLoading] = useState(false);
+
+	// verificar si el usuario esta autenticado, para redirigirlo
+	useEffect(() => {
+		if (session?.status === "authenticated") {
+			//console.log("Authenticated");
+			router.push("/users");
+		}
+	}, [session?.status, router]);
 
 	// memoiza la funcion toggleVariant para que no se vuelva a crear
 	// solo se crea una vez y se reutiliza en cada render
@@ -50,6 +61,7 @@ const AuthForm = () => {
 			// api/register ya que en la carpeta app/api/register esta el archivo de registro
 			axios
 				.post("/api/register", data) // envia una peticion post a la api
+				.then(() => signIn("credentials", data)) // si la solicitud se completa, inicia sesion
 				.catch(() => toast.error("Something went wrong!")) // si la solicitud falla, muestra un errork usando toast
 				.finally(() => setIsLoading(false)); // si la solicitud se completa, deshabilita el loading
 		}
@@ -65,6 +77,7 @@ const AuthForm = () => {
 
 					if (callback?.ok && !callback?.error) {
 						toast.success("Welcome back!");
+						router.push("/users");
 					}
 				})
 				.finally(() => setIsLoading(false));
