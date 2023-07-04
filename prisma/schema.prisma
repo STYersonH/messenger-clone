@@ -22,6 +22,7 @@ datasource db {
 // @unique: indica que el campo es único
 // @default(now()): indica que el campo se genera automáticamente con la fecha actual
 // @updatedAt: indica que el campo se actualiza automáticamente con la fecha actual
+// :? indica que el campo es opcional
 
 // @db.ObjectId: indica que el campo es de tipo ObjectId en la base de datos, donde un ObjectId es un identificador único de 12 bytes que MongoDB genera automáticamente cuando se inserta un documento en una colección. El ObjectId se asigna al campo _id del documento insertado.
 // @relation: indica que el campo es una relación con otra tabla
