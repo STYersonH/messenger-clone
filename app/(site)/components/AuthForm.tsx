@@ -25,7 +25,7 @@ const AuthForm = () => {
 	useEffect(() => {
 		if (session?.status === "authenticated") {
 			//console.log("Authenticated");
-			router.push("/users");
+			router.push("/conversations");
 		}
 	}, [session?.status, router]);
 
@@ -61,7 +61,7 @@ const AuthForm = () => {
 			// api/register ya que en la carpeta app/api/register esta el archivo de registro
 			axios
 				.post("/api/register", data) // envia una peticion post a la api
-				.then(() => signIn("credentials", data)) // si la solicitud se completa, inicia sesion
+				.then(() => signIn("credentials", { ...data, redirect: false })) // si la solicitud se completa, inicia sesion
 				.catch(() => toast.error("Something went wrong!")) // si la solicitud falla, muestra un errork usando toast
 				.finally(() => setIsLoading(false)); // si la solicitud se completa, deshabilita el loading
 		}
@@ -77,7 +77,7 @@ const AuthForm = () => {
 
 					if (callback?.ok && !callback?.error) {
 						toast.success("Welcome back!");
-						router.push("/users");
+						router.push("/conversations");
 					}
 				})
 				.finally(() => setIsLoading(false));
@@ -91,7 +91,7 @@ const AuthForm = () => {
 		signIn(action, { redirect: false })
 			.then((callback) => {
 				if (callback?.error) {
-					toast.error("Something went wrong!");
+					toast.error("Invalid credentials!");
 				}
 				if (callback?.ok && !callback?.error) {
 					toast.success("Welcome back!");

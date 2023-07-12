@@ -4,9 +4,9 @@ import ReactSelect from "react-select";
 
 interface SelectProps {
 	label: string;
-	value?: Record<string, unknown>; // Record<string, unknown> es un objeto que puede tener cualquier propiedad
-	onChange: (value: Record<string, unknown>) => void; // onChange es una funcion que toma un objeto de tipo Record<string, unknown> como argumento y no retorna nada
-	options: Record<string, unknown>[]; // options es un array de objetos de tipo Record<string, unknown>
+	value?: Record<string, any>; // Record<string, unknown> es un objeto que puede tener cualquier propiedad
+	onChange: (value: Record<string, any>) => void; // onChange es una funcion que toma un objeto de tipo Record<string, unknown> como argumento y no retorna nada
+	options: Record<string, any>[]; // options es un array de objetos de tipo Record<string, unknown>
 	disabled?: boolean;
 }
 

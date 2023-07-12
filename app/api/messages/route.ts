@@ -1,6 +1,7 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb"; // si no se imoporta prisma, se puede romper en produccion
+import { pusherServer } from "@/app/libs/pusherServer";
 
 export async function POST(request: Request) {
 	try {
@@ -13,6 +14,10 @@ export async function POST(request: Request) {
 		}
 
 		const newMessage = await prisma.message.create({
+			include: {
+				seen: true,
+				sender: true,
+			},
 			data: {
 				body: message,
 				image: image,
@@ -31,10 +36,6 @@ export async function POST(request: Request) {
 						id: currentUser.id, // quien vio el mensaje inmediatamente es quien lo envio
 					},
 				},
-			},
-			include: {
-				seen: true,
-				sender: true,
 			},
 		});
 
@@ -58,6 +59,26 @@ export async function POST(request: Request) {
 					},
 				},
 			},
+		});
+
+		// console.log("newMessage", newMessage);
+
+		// se envia el evento identificado por conversationId y se nombra messages:new
+		// newMessage es el payload del evento o el objeto que se envia como datos del evento
+		await pusherServer.trigger(conversationId, "messages:new", newMessage);
+		// event (parametro 2) : debe ser una cadena de texto significativo para el evento enviado
+		// cada usuario que este escuchando este canal recibira la actualizacion
+
+		// obtenemos el ultimo mensaje
+		const lastMessage =
+			updatedConversation.messages[updatedConversation.messages.length - 1];
+
+		// se creara la conversacion en tiempo real para cada uno de los usuarios si es un grupo
+		await updatedConversation.users.map((user) => {
+			pusherServer.trigger(user.email!, "conversation:update", {
+				id: conversationId,
+				messages: [lastMessage],
+			});
 		});
 
 		return NextResponse.json(newMessage);

@@ -10,6 +10,7 @@ import Avatar from "@/app/components/Avatar";
 import Modal from "@/app/components/Modal";
 import ConfirmModal from "./ConfirmModal";
 import AvatarGroup from "@/app/components/AvatarGroup";
+import useActiveList from "@/app/hooks/useActiveList";
 
 interface ProfileDrawerProps {
 	isOpen: boolean;
@@ -24,6 +25,10 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 	onClose,
 	data,
 }) => {
+	const { members } = useActiveList();
+	const isActive = members.indexOf(otherUser?.email!) !== -1;
+
+	console.log("use other user from ProfileDrawer");
 	const otherUser = useOtherUser(data);
 	// para el modal
 	const [confirmOpen, setConfirmOpen] = useState(false);
@@ -43,8 +48,8 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 			return `${data.users.length} members`;
 		}
 
-		return "Active";
-	}, [data]);
+		return isActive ? "Active" : "Offline";
+	}, [data, isActive]);
 
 	return (
 		<>

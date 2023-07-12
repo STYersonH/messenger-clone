@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 
 import useConversation from "@/app/hooks/useConversation";
@@ -10,6 +10,9 @@ import { FullConversationType } from "@/app/types";
 import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
 import { User } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { pusherClient } from "@/app/libs/pusherClient";
+import { find, remove } from "lodash";
 
 interface ConversationListProps {
 	initialItems: FullConversationType[];
@@ -20,6 +23,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 	initialItems,
 	users,
 }) => {
+	const session = useSession();
 	const [items, setItems] = useState(initialItems);
 	// para abrir el modal de crear conversacion grupal
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +31,66 @@ const ConversationList: React.FC<ConversationListProps> = ({
 	const router = useRouter();
 
 	const { conversationId, isOpen } = useConversation();
+
+	// ya no tenemos que repetir el codigo de suscripcion a pusher cada vez que se renderiza el componente
+	const pusherKey = useMemo(() => {
+		return session.data?.user?.email;
+	}, [session.data?.user?.email]);
+
+	// cada vez que se cree una nueva conversacion o se elimine una conversacion, en tiempo real se vera reflejado en la lista de conversaciones
+	useEffect(() => {
+		if (!pusherKey) return;
+
+		pusherClient.subscribe(pusherKey);
+
+		const newHandler = (conversation: FullConversationType) => {
+			setItems((current) => {
+				if (find(current, { id: conversation.id })) {
+					return current;
+				}
+
+				return [conversation, ...current];
+			});
+		};
+
+		const updateHandler = (conversation: FullConversationType) => {
+			setItems((current) =>
+				current.map((currentConversation) => {
+					if (currentConversation.id === conversation.id) {
+						return {
+							...currentConversation,
+							messages: conversation.messages,
+						};
+					}
+
+					return currentConversation;
+				})
+			);
+		};
+
+		const removeHandler = (conversation: FullConversationType) => {
+			setItems((current) => {
+				// no debe ser igual al id que se recibio en el pusher
+				return [...current.filter((convo) => convo.id !== conversation.id)];
+			});
+
+			// ya no mostrar los mensajes
+			if (conversationId === conversation.id) {
+				router.push("/conversations");
+			}
+		};
+
+		pusherClient.bind("conversation:new", newHandler);
+		pusherClient.bind("conversation:update", updateHandler);
+		pusherClient.bind("conversation:remove", removeHandler);
+
+		return () => {
+			pusherClient.unsubscribe(pusherKey);
+			pusherClient.unbind("conversation:new", newHandler);
+			pusherClient.unbind("conversation:update", updateHandler);
+			pusherClient.unbind("conversation:remove", removeHandler);
+		};
+	}, [pusherKey, conversationId, router]);
 
 	return (
 		<>

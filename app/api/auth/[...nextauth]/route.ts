@@ -23,7 +23,7 @@ export const authOptions: AuthOptions = {
 		// autenticacion con correo y contraseña
 		CredentialsProvider({
 			// toma el nombre de la estrategia de autenticación
-			name: "Credentials",
+			name: "credentials",
 			// se configuran las credenciales
 			credentials: {
 				email: { label: "email", type: "text" },
