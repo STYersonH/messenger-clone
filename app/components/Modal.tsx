@@ -6,14 +6,18 @@ import { IoClose } from "react-icons/io5";
 
 interface ModalProps {
 	isOpen?: boolean;
-	onClose?: () => void;
+	onClose?: (value: boolean) => void;
 	children?: React.ReactNode;
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 	return (
 		<Transition.Root show={isOpen} as={Fragment}>
-			<Dialog as="div" className="relative z-50" onClose={onClose}>
+			<Dialog
+				as="div"
+				className="relative z-50"
+				onClose={() => onClose?.(false)}
+			>
 				<Transition.Child
 					as={Fragment}
 					enter="ease-out duration-300"
