@@ -26,10 +26,10 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 	data,
 }) => {
 	const { members } = useActiveList();
-	const isActive = members.indexOf(otherUser?.email!) !== -1;
-
 	console.log("use other user from ProfileDrawer");
 	const otherUser = useOtherUser(data);
+	const isActive = members.indexOf(otherUser?.email!) !== -1;
+
 	// para el modal
 	const [confirmOpen, setConfirmOpen] = useState(false);
 
