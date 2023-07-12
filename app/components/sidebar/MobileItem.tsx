@@ -8,7 +8,7 @@ interface MobileItemProps {
 	href: string;
 	icon: any;
 	active?: boolean;
-	onClick?: () => void;
+	onClick: (() => Promise<undefined>) | undefined;
 }
 
 // React.FC<MobileItemProps> se usa para definir el tipo de dato que se va a recibir
