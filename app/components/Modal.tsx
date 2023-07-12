@@ -103,7 +103,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
                       focus:ring-indigo-500 
                       focus:ring-offset-2
                     "
-										onClick={onClose}
+										//onClick={onClose}
+										onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+											onClose?.(false)
+										}
 									>
 										<span className="sr-only">Close</span>
 										<IoClose className="h-6 w-6" aria-hidden="true" />
