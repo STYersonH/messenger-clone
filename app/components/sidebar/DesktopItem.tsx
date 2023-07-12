@@ -7,7 +7,7 @@ interface DesktopItemProps {
 	label: string;
 	icon: any;
 	href: string;
-	onClick: () => void;
+	onClick: (() => Promise<undefined>) | undefined;
 	active?: boolean;
 }
 
