@@ -10,7 +10,7 @@ import useConversation from "./useConversation";
 
 const useRoutes = () => {
 	const pathname = usePathname();
-	const { conversationId } = useConversation();
+	const { conversationId, conversationGroupId } = useConversation();
 
 	const routes = useMemo(
 		() => [
@@ -24,7 +24,7 @@ const useRoutes = () => {
 				label: "Groups",
 				href: "/groups",
 				icon: HiUserGroup,
-				active: pathname === "/groups",
+				active: pathname === "/groups" || !!conversationGroupId,
 			},
 			{
 				label: "Logout",
@@ -37,7 +37,7 @@ const useRoutes = () => {
 				icon: HiArrowLeftOnRectangle,
 			},
 		],
-		[pathname, conversationId]
+		[pathname, conversationId, conversationGroupId]
 	);
 
 	return routes;

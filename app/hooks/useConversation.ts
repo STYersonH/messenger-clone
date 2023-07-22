@@ -15,21 +15,36 @@ const useConversation = () => {
 		if (!params?.conversationId) {
 			return "";
 		}
+		// en el URL de una conversacion individual, el id de la conversacion se encuentra en el parametro conversationId
 		return params.conversationId as string;
 	}, [params?.conversationId]);
+
+	const conversationGroupId = useMemo(() => {
+		if (!params?.groupId) {
+			return "";
+		}
+
+		return params.groupId as string;
+	}, [params?.groupId]);
 
 	// 2 args:
 	// 1) La funcion para determinar si se proporciona un id de conversación
 	// 2) La lista de dependencias que incluye el id de conversación
 	const isOpen = useMemo(() => !!conversationId, [conversationId]); // !! convierte string en boolean
+	const isOpenGroup = useMemo(
+		() => !!conversationGroupId,
+		[conversationGroupId]
+	);
 
 	// solo se retornara cada vez que cambie el id de conversación y el estado de isOpen
 	return useMemo(
 		() => ({
 			isOpen,
+			isOpenGroup,
 			conversationId,
+			conversationGroupId,
 		}),
-		[isOpen, conversationId]
+		[isOpen, conversationId, isOpenGroup, conversationGroupId]
 	);
 };
 
