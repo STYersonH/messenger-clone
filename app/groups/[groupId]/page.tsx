@@ -2,8 +2,8 @@ import getConversationById from "@/app/actions/getConversationById";
 import getMessages from "@/app/actions/getMessages";
 import EmptyState from "@/app/components/EmptyState";
 import Header from "@/app/components/chats/Header";
-import Body from "@/app/components/chats/Body";
-import Form from "@/app/components/chats/Form";
+import Body from "./components/Body";
+import Form from "./components/Form";
 
 interface IParams {
 	groupId: string;

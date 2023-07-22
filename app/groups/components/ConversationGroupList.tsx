@@ -27,7 +27,7 @@ const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 	const [items, setItems] = useState(initialItems);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const router = useRouter();
-	const { conversationId, isOpenGroup } = useConversation();
+	const { conversationGroupId, isOpenGroup } = useConversation();
 
 	const pusherKey = useMemo(() => {
 		return session.data?.user?.email;
@@ -35,6 +35,8 @@ const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 
 	useEffect(() => {
 		if (!pusherKey) return;
+
+		pusherClient.subscribe(pusherKey);
 
 		const newHandler = (conversation: FullConversationType) => {
 			setItems((current) => {
@@ -68,11 +70,22 @@ const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 			});
 
 			// ya no mostrar los mensajes
-			if (conversationId === conversation.id) {
-				router.push("/conversations");
+			if (conversationGroupId === conversation.id) {
+				router.push("/groups");
 			}
 		};
-	}, [pusherKey, conversationId, router]);
+
+		pusherClient.bind("conversation:new", newHandler);
+		pusherClient.bind("conversation:update", updateHandler);
+		pusherClient.bind("conversation:remove", removeHandler);
+
+		return () => {
+			pusherClient.unsubscribe(pusherKey);
+			pusherClient.unbind("conversation:new", newHandler);
+			pusherClient.unbind("conversation:update", updateHandler);
+			pusherClient.unbind("conversation:remove", removeHandler);
+		};
+	}, [pusherKey, conversationGroupId, router]);
 
 	return (
 		<>
@@ -103,7 +116,7 @@ const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 							<ConversationBox
 								key={item.id}
 								data={item}
-								selected={conversationId === item.id}
+								selected={conversationGroupId === item.id}
 							/>
 						))}
 				</div>
