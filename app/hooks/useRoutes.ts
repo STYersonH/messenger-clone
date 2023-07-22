@@ -4,7 +4,7 @@
 import { useMemo } from "react";
 import { usePathname } from "next/navigation"; // para obtener la ruta actual
 import { HiChat } from "react-icons/hi";
-import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
+import { HiArrowLeftOnRectangle, HiUserGroup } from "react-icons/hi2";
 import { signOut } from "next-auth/react";
 import useConversation from "./useConversation";
 
@@ -21,10 +21,10 @@ const useRoutes = () => {
 				active: pathname === "/conversations" || !!conversationId, // un booleano para determinar si la ruta está activa
 			},
 			{
-				label: "Users",
-				href: "/users",
-				icon: HiUsers,
-				active: pathname === "/users",
+				label: "Groups",
+				href: "/groups",
+				icon: HiUserGroup,
+				active: pathname === "/groups",
 			},
 			{
 				label: "Logout",
