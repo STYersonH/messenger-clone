@@ -14,34 +14,27 @@ import { useSession } from "next-auth/react";
 import { pusherClient } from "@/app/libs/pusherClient";
 import { find, remove } from "lodash";
 
-interface ConversationListProps {
+interface ConversationGroupListProps {
 	initialItems: FullConversationType[];
 	users: User[];
 }
 
-const ConversationList: React.FC<ConversationListProps> = ({
+const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 	initialItems,
 	users,
 }) => {
 	const session = useSession();
 	const [items, setItems] = useState(initialItems);
-	// para abrir el modal de crear conversacion grupal
 	const [isModalOpen, setIsModalOpen] = useState(false);
-
 	const router = useRouter();
+	const { conversationId, isOpenGroup } = useConversation();
 
-	const { conversationId, isOpen } = useConversation();
-
-	// ya no tenemos que repetir el codigo de suscripcion a pusher cada vez que se renderiza el componente
 	const pusherKey = useMemo(() => {
 		return session.data?.user?.email;
 	}, [session.data?.user?.email]);
 
-	// cada vez que se cree una nueva conversacion o se elimine una conversacion, en tiempo real se vera reflejado en la lista de conversaciones
 	useEffect(() => {
 		if (!pusherKey) return;
-
-		pusherClient.subscribe(pusherKey);
 
 		const newHandler = (conversation: FullConversationType) => {
 			setItems((current) => {
@@ -79,17 +72,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
 				router.push("/conversations");
 			}
 		};
-
-		pusherClient.bind("conversation:new", newHandler);
-		pusherClient.bind("conversation:update", updateHandler);
-		pusherClient.bind("conversation:remove", removeHandler);
-
-		return () => {
-			pusherClient.unsubscribe(pusherKey);
-			pusherClient.unbind("conversation:new", newHandler);
-			pusherClient.unbind("conversation:update", updateHandler);
-			pusherClient.unbind("conversation:remove", removeHandler);
-		};
 	}, [pusherKey, conversationId, router]);
 
 	return (
@@ -102,12 +84,12 @@ const ConversationList: React.FC<ConversationListProps> = ({
 			<aside
 				className={clsx(
 					`fixed inset-y-0 pb-20 lg:left-20 lg:w-80 lg:block overflow-y-auto border-r border-gray-200`,
-					isOpen ? "hidden" : "block w-full left-0"
+					isOpenGroup ? "hidden" : "block w-full left-0"
 				)}
 			>
 				<div className="px-5">
 					<div className="flex justify-between mb-4 pt-4">
-						<div className="text-2xl font-bold text-neutral-800">Messages</div>
+						<div className="text-2xl font-bold text-neutral-800">Groups</div>
 						<div
 							className="rounded-full p-2 bg-gray-100 text-gray-600 cursor-pointer hover:opacity-75 transition"
 							onClick={() => setIsModalOpen(true)}
@@ -116,7 +98,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 						</div>
 					</div>
 					{items
-						.filter((item) => !item.isGroup)
+						.filter((item) => item.isGroup) //restringir solo los chats que son de grupos
 						.map((item) => (
 							<ConversationBox
 								key={item.id}
@@ -130,4 +112,4 @@ const ConversationList: React.FC<ConversationListProps> = ({
 	);
 };
 
-export default ConversationList;
+export default ConversationGroupList;

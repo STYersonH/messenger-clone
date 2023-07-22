@@ -7,9 +7,10 @@ import MobileItem from "./MobileItem";
 const MobileFooter = () => {
 	//para obtener las rutas de la app
 	const routes = useRoutes();
-	const { isOpen } = useConversation();
+	const { isOpen, isOpenGroup } = useConversation();
 
 	if (isOpen) return null;
+	if (isOpenGroup) return null;
 
 	return (
 		<div className="fixed justify-between w-full bottom-0 z-40 flex items-center bg-white border-t-[1px] lg:hidden">
