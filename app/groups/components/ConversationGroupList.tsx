@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { MdOutlineGroupAdd } from "react-icons/md";
+import { MdGroupAdd } from "react-icons/md";
 
 import useConversation from "@/app/hooks/useConversation";
 import { FullConversationType } from "@/app/types";
@@ -107,7 +107,7 @@ const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 							className="rounded-full p-2 bg-gray-100 text-gray-600 cursor-pointer hover:opacity-75 transition"
 							onClick={() => setIsModalOpen(true)}
 						>
-							<MdOutlineGroupAdd size={20} />
+							<MdGroupAdd size={20} />
 						</div>
 					</div>
 					{items

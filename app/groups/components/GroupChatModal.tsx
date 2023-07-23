@@ -48,9 +48,10 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
 				...data,
 				isGroup: true,
 			})
-			.then(() => {
-				router.refresh(); // recarga la pagina
+			.then((data) => {
+				//router.refresh(); // recarga la pagina
 				onClose(); // cierra el modal
+				router.push(`/groups/${data.data.id}`);
 			})
 			.catch(() => toast.error("Something went wrong!"))
 			.finally(() => setIsLoading(false));
