@@ -3,6 +3,7 @@
 import Button from "@/app/components/Button";
 import Modal from "@/app/components/Modal";
 import Select from "@/app/components/inputs/Select";
+import SelectUser from "@/app/components/inputs/SelectUser";
 import Input from "@/app/components/inputs/input";
 import { User } from "@prisma/client";
 import axios from "axios";
@@ -11,13 +12,13 @@ import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 
-interface GroupChatModalProps {
+interface NewChatModalProps {
 	isOpen?: boolean;
 	onClose: () => void;
 	users: User[];
 }
 
-const GroupChatModal: React.FC<GroupChatModalProps> = ({
+const NewChatModal: React.FC<NewChatModalProps> = ({
 	isOpen,
 	onClose,
 	users,
@@ -34,23 +35,23 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
 	} = useForm<FieldValues>({
 		// especifica los valores por defecto de los campos
 		defaultValues: {
-			name: "",
-			members: [],
+			conversationWith: {},
 		},
 	});
 
-	const members = watch("members"); // observa los cambios en el campo members
+	const conversationWith = watch("conversationWith"); // observa los cambios en el campo members
 	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 		setIsLoading(true);
+		console.log(data);
 
 		axios
 			.post("/api/conversations", {
-				...data,
-				isGroup: true,
+				userId: data.conversationWith.value, //se crea pero no es un grupo
 			})
-			.then(() => {
-				router.refresh(); // recarga la pagina
+			.then((data) => {
+				// router.refresh(); // recarga la pagina
 				onClose(); // cierra el modal
+				router.push(`/conversations/${data.data.id}`);
 			})
 			.catch(() => toast.error("Something went wrong!"))
 			.finally(() => setIsLoading(false));
@@ -63,30 +64,22 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
 				<div className="space-y-12">
 					<div className="border-b border-gray-900/10 pb-12">
 						<h2 className="text-base font-semibold leading-7 text-gray-900">
-							Create a group chat
+							Create a new chat
 						</h2>
-						<p className="mt-1 text-sm leading-6 gap-y-8">
-							<Input
-								register={register}
-								label="Name"
-								id="name"
+						<p className="mt-3 text-sm leading-6 gap-y-8">
+							<SelectUser
 								disabled={isLoading}
-								required
-								errors={errors}
-							/>
-							<Select
-								disabled={isLoading}
-								label="Members"
+								label="new conversation with"
 								options={users.map((user) => ({
 									value: user.id,
 									label: user.name,
 								}))}
 								onChange={(value) =>
-									setValue("members", value, {
+									setValue("conversationWith", value, {
 										shouldValidate: true,
 									})
 								}
-								value={members}
+								value={conversationWith}
 							/>
 						</p>
 					</div>
@@ -110,4 +103,4 @@ const GroupChatModal: React.FC<GroupChatModalProps> = ({
 	);
 };
 
-export default GroupChatModal;
+export default NewChatModal;
