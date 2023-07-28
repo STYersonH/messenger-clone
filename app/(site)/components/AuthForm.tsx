@@ -55,16 +55,32 @@ const AuthForm = () => {
 
 	// se usa para manejar el submit del formulario
 	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+		console.log("data desde authForm", data);
 		// Si se esta enviando significa que debemos habilitar el loading
 		setIsLoading(true);
 		if (variant === "REGISTER") {
 			// api/register ya que en la carpeta app/api/register esta el archivo de registro
 			axios
 				.post("/api/register", data) // envia una peticion post a la api
+				.then((response) => {
+					const userId = response.data.id;
+					return axios.post("/api/group", {
+						nombreGrupo: "Prueba de creacion",
+						university: data.universidad,
+						career: data.carrera,
+						userId,
+					});
+				})
 				.then(() => signIn("credentials", { ...data, redirect: false })) // si la solicitud se completa, inicia sesion
 				.catch(() => toast.error("Something went wrong!")) // si la solicitud falla, muestra un errork usando toast
 				.finally(() => setIsLoading(false)); // si la solicitud se completa, deshabilita el loading
+
+			// axios
+			// 	.post("/api/group", { nombreGrupo: "Prueba de creacion" })
+			// 	.catch(() => toast.error("Something went wrong!")) // si la solicitud falla, muestra un errork usando toast
+			// 	.finally(() => setIsLoading(false));
 		}
+
 		if (variant === "LOGIN") {
 			signIn("credentials", {
 				...data,
@@ -129,6 +145,24 @@ const AuthForm = () => {
 						errors={errors}
 						disabled={isLoading}
 					/>
+					{variant === "REGISTER" && (
+						<>
+							<Input
+								id="universidad"
+								label="Universidad"
+								register={register}
+								errors={errors}
+								disabled={isLoading} // se deshabilita el input cuando se esta enviando
+							/>
+							<Input
+								id="carrera"
+								label="Carrera"
+								register={register}
+								errors={errors}
+								disabled={isLoading} // se deshabilita el input cuando se esta enviando
+							/>
+						</>
+					)}
 					<div>
 						{/* Como el boton esta dentro del form, no necesitamos un onClick, se enviara por defecto */}
 						<Button disabled={isLoading} fullWidth type="submit">
