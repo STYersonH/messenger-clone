@@ -3,6 +3,7 @@
 import axios from "axios";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/input";
+import SelectInput from "@/app/components/inputs/selectInput";
 import { useCallback, useEffect, useState } from "react";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 import { BsGithub, BsGoogle } from "react-icons/bs";
@@ -43,6 +44,7 @@ const AuthForm = () => {
 	const {
 		register, // se usa para registrar los inputs del formulario
 		handleSubmit, // se usa para manejar el submit del formulario
+		watch,
 		formState: { errors }, // se usa para manejar los errores del formulario
 	} = useForm<FieldValues>({
 		//useForm para manejar el estado y validacion del formulario
@@ -52,6 +54,9 @@ const AuthForm = () => {
 			password: "",
 		},
 	});
+
+	const carrera = watch("carrera");
+	const universidad = watch("universidad");
 
 	// se usa para manejar el submit del formulario
 	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -147,19 +152,20 @@ const AuthForm = () => {
 					/>
 					{variant === "REGISTER" && (
 						<>
-							<Input
+							<SelectInput
 								id="universidad"
 								label="Universidad"
 								register={register}
 								errors={errors}
 								disabled={isLoading} // se deshabilita el input cuando se esta enviando
 							/>
-							<Input
+							<SelectInput
 								id="carrera"
 								label="Carrera"
 								register={register}
 								errors={errors}
 								disabled={isLoading} // se deshabilita el input cuando se esta enviando
+								choosedUniversity={universidad}
 							/>
 						</>
 					)}
