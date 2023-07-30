@@ -7,12 +7,12 @@ import { MdGroupAdd } from "react-icons/md";
 
 import useConversation from "@/app/hooks/useConversation";
 import { FullConversationType } from "@/app/types";
-import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
 import { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { pusherClient } from "@/app/libs/pusherClient";
 import { find, remove } from "lodash";
+import ConversationBox from "@/app/components/chats/ConversationBox";
 
 interface ConversationGroupListProps {
 	initialItems: FullConversationType[];
@@ -101,13 +101,13 @@ const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 				)}
 			>
 				<div className="px-5">
-					<div className="flex justify-between mb-4 pt-4">
+					<div className="flex items-center justify-between mb-4 pt-4">
 						<div className="text-2xl font-bold text-neutral-800">Groups</div>
 						<div
-							className="rounded-full p-2 bg-gray-100 text-gray-600 cursor-pointer hover:opacity-75 transition"
+							className="rounded-full p-2 text-gray-600 cursor-pointer hover:transform hover:scale-110 transition"
 							onClick={() => setIsModalOpen(true)}
 						>
-							<MdGroupAdd size={20} />
+							<MdGroupAdd className="text-black" size={25} />
 						</div>
 					</div>
 					{items

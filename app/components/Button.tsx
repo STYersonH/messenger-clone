@@ -39,7 +39,7 @@ const Button: React.FC<ButtonProps> = ({
 				focus-visible:outline-2
 				focus-visible:outline-offset-2
       `,
-				disabled && "opacity-50 cursor-default", //cuando se de click, se carga la solicitud y el boton se desactiva
+				disabled && "opacity-50 cursor-auto pointer-events-none", //cuando se de click, se carga la solicitud y el boton se desactiva
 				fullWidth && "w-full",
 				secundary ? "text-gray-900" : "text-white",
 				danger &&

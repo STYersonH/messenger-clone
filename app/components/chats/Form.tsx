@@ -48,7 +48,7 @@ const Form = () => {
 				onUpload={handleUpload}
 				uploadPreset="iurr7c1h"
 			>
-				<HiPhoto size={32} className=" text-sky-500" />
+				<HiPhoto size={32} className=" text-black" />
 			</CldUploadButton>
 
 			<form
@@ -65,7 +65,7 @@ const Form = () => {
 				{/* el boton para que sea submit debe estar dentro del form */}
 				<button
 					type="submit"
-					className="rounded-full p-2 bg-sky-500 cursor-pointer hover:bg-sky-600 transition"
+					className="rounded-full p-2 bg-black cursor-pointer hover:transform hover:scale-110 transition"
 				>
 					<HiPaperAirplane size={18} className="text-white" />
 				</button>
