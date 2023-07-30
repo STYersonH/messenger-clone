@@ -8,7 +8,7 @@ import { TiUserAdd } from "react-icons/ti";
 
 import useConversation from "@/app/hooks/useConversation";
 import { FullConversationType } from "@/app/types";
-import ConversationBox from "./ConversationBox";
+import ConversationBox from "../../components/chats/ConversationBox";
 import NewChatModal from "./NewChatModal";
 import { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -107,13 +107,13 @@ const ConversationList: React.FC<ConversationListProps> = ({
 				)}
 			>
 				<div className="px-5">
-					<div className="flex justify-between mb-4 pt-4">
+					<div className="flex items-center justify-between mb-4 pt-4">
 						<div className="text-2xl font-bold text-neutral-800">Messages</div>
 						<div
-							className="rounded-full p-2 bg-gray-100 text-gray-600 cursor-pointer hover:opacity-75 transition"
+							className="rounded-full p-2  text-gray-600 cursor-pointer hover:transform hover:scale-110 transition"
 							onClick={() => setIsModalOpen(true)}
 						>
-							<TiUserAdd size={20} />
+							<TiUserAdd className="text-black" size={25} />
 						</div>
 					</div>
 					{items
