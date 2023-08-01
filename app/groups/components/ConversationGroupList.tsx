@@ -87,6 +87,16 @@ const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 		};
 	}, [pusherKey, conversationGroupId, router]);
 
+	const handleGroupListFocus = async () => {
+		try {
+			const response = await fetch("/api/conversations");
+			const data = await response.json();
+			setItems(data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<>
 			<GroupChatModal
@@ -100,7 +110,7 @@ const ConversationGroupList: React.FC<ConversationGroupListProps> = ({
 					isOpenGroup ? "hidden" : "block w-full left-0"
 				)}
 			>
-				<div className="px-5">
+				<div className="px-5" onFocus={handleGroupListFocus}>
 					<div className="flex items-center justify-between mb-4 pt-4">
 						<div className="text-2xl font-bold text-neutral-800">Groups</div>
 						<div

@@ -93,6 +93,16 @@ const ConversationList: React.FC<ConversationListProps> = ({
 		};
 	}, [pusherKey, conversationId, router]);
 
+	const handleListFocus = async () => {
+		try {
+			const response = await fetch("/api/conversations");
+			const data = await response.json();
+			setItems(data);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	return (
 		<>
 			<NewChatModal
@@ -106,7 +116,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 					isOpen ? "hidden" : "block w-full left-0"
 				)}
 			>
-				<div className="px-5">
+				<div className="px-5" onFocus={handleListFocus}>
 					<div className="flex items-center justify-between mb-4 pt-4">
 						<div className="text-2xl font-bold text-neutral-800">Messages</div>
 						<div
