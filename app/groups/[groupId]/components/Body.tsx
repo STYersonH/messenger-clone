@@ -25,6 +25,21 @@ const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
 	}, [conversationGroupId]);
 
 	useEffect(() => {
+		const fetchMessages = async () => {
+			try {
+				const response = await axios.get(
+					`/api/conversations/${conversationGroupId}/messages`
+				);
+				setMessages(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchMessages();
+	}, [conversationGroupId]);
+
+	useEffect(() => {
 		// se suscribe al canal de conversacionId
 		// se establece una conexion websocket con el servidor de pusher y comienza a recibir eventos en tiempo real del canal especificado
 		pusherClient.subscribe(conversationGroupId);

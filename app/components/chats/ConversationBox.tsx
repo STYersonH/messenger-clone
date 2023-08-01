@@ -34,6 +34,13 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
 		router.push(`/${data.isGroup ? "groups" : "conversations"}/${data.id}`);
 	}, [data, router]);
 
+	// const isLastMessageOwn = useMemo(() => {
+	// 	const messages = data.messages || [];
+
+	// 	const userLastMessage = messages[messages.length - 1].sender.email;
+	// 	return session?.data?.user?.email === userLastMessage;
+	// }, [data.messages, session?.data?.user?.email]);
+
 	const lastMessage = useMemo(() => {
 		const messages = data.messages || [];
 

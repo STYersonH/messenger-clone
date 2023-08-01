@@ -28,7 +28,7 @@ const useRoutes = () => {
 			},
 			{
 				label: "Logout",
-				href: "#",
+				href: "/",
 				onClick: () => signOut(), // una función para ejecutar cuando se hace clic en la ruta
 				// onClick: (): void => {
 				//   signOut();
