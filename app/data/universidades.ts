@@ -16,20 +16,6 @@ export const universidades = [
 	},
 	{
 		id: 3,
-		acronimo: "UTEA",
-		nombre: "Universidad Tecnologica de los Andes",
-		ciudad: "Cusco",
-		pais: "Peru",
-	},
-	{
-		id: 4,
-		acronimo: "UAP",
-		nombre: "Universidad Andina del Peru",
-		ciudad: "Cusco",
-		pais: "Peru",
-	},
-	{
-		id: 5,
 		acronimo: "Continental",
 		nombre: "Universidad Continental",
 		ciudad: "Cusco",
